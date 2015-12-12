@@ -40,9 +40,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</ul>
 	</div>
 	<table>
-	<tr><td colspan="2">测试</td></tr>
+	<tr><td colspan="6"> </td></tr>
 	<tr>
-		<td><input  value="测试"  onclick='setbinding("/test/test","{    \"app\":{        \"appId\":\"zjhtwallet\",        \"timeStamp\":\"TIMESTAMP\",         \"nonce\":\"NONCE\",        \"signature\":\"SIGNATURE\"    }    \"body\":{        \"hello\":\"baby\"    }}   ")'  type="button" ></td>
+		<td><input  value="查询城市天气"  onclick='setbinding("/weather/queryWeather"," {        \"app\":{            \"appId\":\"demo\",            \"timeStamp\":\"TIMESTAMP\",             \"nonce\":\"NONCE\",            \"signature\":\"SIGNATURE\"        },        \"body\":{           \"city\":\"娣卞湷\"        }}")'  type="button" ></td>
 	</tr>
 </table>
   </body>

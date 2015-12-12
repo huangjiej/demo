@@ -1,6 +1,8 @@
 package com.hummingbird.demo.services.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import com.hummingbird.common.face.Pagingnation;
 import com.hummingbird.demo.vo.WeatherBodyVO;
 import com.hummingbird.demo.mapper.WeatherMapper;
 import com.hummingbird.demo.services.WeatherService;
+import com.hummingbird.demo.util.HttpProcess;
 import com.hummingbird.common.exception.BusinessException;
 import com.hummingbird.demo.vo.WeatherBodyVOResult;
 
@@ -24,7 +27,8 @@ import com.hummingbird.demo.vo.WeatherBodyVOResult;
 public class WeatherServiceImpl  implements WeatherService{
 
 	org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(this.getClass());
-	
+	@Autowired(required = true)
+    HttpProcess httpProcess;
 	@Autowired
 	WeatherMapper dao;
 
@@ -41,7 +45,10 @@ public class WeatherServiceImpl  implements WeatherService{
 				log.debug("查询城市天气开始");
 		}
 		WeatherBodyVOResult result = new WeatherBodyVOResult();
-		
+		String url = "";
+		Map<String,String> params = new HashMap<String, String>(); 
+		boolean type = true;
+		httpProcess.doGet(url, params, type);
 		if(log.isDebugEnabled()){
 				log.debug("查询城市天气完成");
 		}

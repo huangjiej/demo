@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hummingbird.commonbiz.vo.BaseTransVO;
 import com.hummingbird.demo.vo.WeatherBodyVO;
 import com.hummingbird.demo.services.WeatherService;
-import com.hummingbird.demo.util.HttpProcess;
+import com.hummingbird.demo.util.HttpProcessUtil;
 import com.hummingbird.common.controller.BaseController;
 import com.hummingbird.common.event.EventListenerContainer;
 import com.hummingbird.common.event.RequestEvent;

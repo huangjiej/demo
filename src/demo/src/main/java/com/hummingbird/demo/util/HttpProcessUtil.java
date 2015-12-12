@@ -17,8 +17,8 @@ import org.apache.commons.httpclient.params.HostParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.springframework.stereotype.Component;
 
-@Component("httpProcess")
-public class HttpProcess
+
+public class HttpProcessUtil
 {
   private final String CONTENT_CHARSET_UTF8 = "UTF-8";
 

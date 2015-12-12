@@ -13,9 +13,11 @@ import com.hummingbird.common.face.Pagingnation;
 import com.hummingbird.demo.vo.WeatherBodyVO;
 import com.hummingbird.demo.mapper.WeatherMapper;
 import com.hummingbird.demo.services.WeatherService;
-import com.hummingbird.demo.util.HttpProcess;
+import com.hummingbird.demo.util.HttpProcessUtil;
 import com.hummingbird.common.exception.BusinessException;
 import com.hummingbird.demo.vo.WeatherBodyVOResult;
+
+import net.sf.json.JSONObject;
 
 /**
  * @author 
@@ -27,8 +29,6 @@ import com.hummingbird.demo.vo.WeatherBodyVOResult;
 public class WeatherServiceImpl  implements WeatherService{
 
 	org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(this.getClass());
-	@Autowired(required = true)
-    HttpProcess httpProcess;
 	@Autowired
 	WeatherMapper dao;
 
@@ -48,7 +48,19 @@ public class WeatherServiceImpl  implements WeatherService{
 		String url = "";
 		Map<String,String> params = new HashMap<String, String>(); 
 		boolean type = true;
-		httpProcess.doGet(url, params, type);
+		HttpProcessUtil httpProCessUtil = new HttpProcessUtil();
+		try {
+			byte[] bytes = httpProCessUtil.doGet(url, params, type);
+			String responseBody = new String(bytes, "UTF-8");
+			JSONObject json = JSONObject.fromObject(responseBody);
+			result.setCityName(json.getString("cityName"));
+			result.setMinTemperature(json.getInt("minTemperature"));
+			result.setMaxTemperature(json.getInt("maxTemperature"));
+			result.setWeather(json.getString("weather"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		if(log.isDebugEnabled()){
 				log.debug("查询城市天气完成");
 		}

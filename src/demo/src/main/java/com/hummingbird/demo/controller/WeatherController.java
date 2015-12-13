@@ -3,6 +3,7 @@ package com.hummingbird.demo.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hummingbird.common.controller.BaseController;
 import com.hummingbird.common.event.EventListenerContainer;
 import com.hummingbird.common.event.RequestEvent;
+import com.hummingbird.common.exception.BusinessException;
 import com.hummingbird.common.exception.ValidateException;
 import com.hummingbird.common.ext.AccessRequered;
 import com.hummingbird.common.util.RequestUtil;
@@ -65,6 +67,7 @@ public class WeatherController extends BaseController {
 //				throw new TokenException("token验证失败,或已过期,请重新登录");
 //			}
 //			validateWithBusiness(transorder.getBody().getToken(), transorder.getApp().getAppId(),token);
+			
 			try {
 				String jsonstr = RequestUtil.getRequestPostData(request);
 				request.setAttribute("rawjson", jsonstr);
@@ -74,21 +77,33 @@ public class WeatherController extends BaseController {
 				rm.mergeException(ValidateException.ERROR_PARAM_FORMAT_ERROR.cloneAndAppend(null, messagebase+"参数"));
 				return rm;
 			}
-			
-			//业务数据逻辑校验
-			if(log.isDebugEnabled()){
-				log.debug("检验通过，获取请求");
+			String city = transorder.getBody().getCity();
+			if(StringUtils.isBlank(city)){
+				rm.setErrcode(10000);
+				rm.setErrmsg("城市名不能为空");
+			}else{
+				//业务数据逻辑校验
+				if(log.isDebugEnabled()){
+					log.debug("检验通过，获取请求");
+				}
+				WeatherBodyVOResult  result = weatherService.queryWeather(transorder.getApp().getAppId(),transorder.getBody());
+				rm.setErrcode(0);
+				rm.setErrmsg(messagebase + "成功");
+				rm.put("result",result);
+				//tokenSrv.postponeToken(token);
 			}
-			WeatherBodyVOResult  result = weatherService.queryWeather(transorder.getApp().getAppId(),transorder.getBody());
-			rm.setErrcode(0);
-			rm.setErrmsg(messagebase + "成功");
-			rm.put("result",result);
-			//tokenSrv.postponeToken(token);
-		}catch (Exception e1) {
-			log.error(String.format(messagebase + "失败"), e1);
+		}catch (BusinessException e) {
+			log.error(String.format(messagebase + "失败"), e);
 			rm.setErrcode(10000);
 			rm.setErrmsg(messagebase + "失败");
-			rm.mergeException(e1);
+			rm.mergeException(e);
+			if(qe!=null)
+				qe.setSuccessed(false);
+		}catch (Exception e) {
+			log.error(String.format(messagebase + "失败"), e);
+			rm.setErrcode(10000);
+			rm.setErrmsg(messagebase + "失败");
+			rm.mergeException(e);
 			if(qe!=null)
 				qe.setSuccessed(false);
 		} finally {

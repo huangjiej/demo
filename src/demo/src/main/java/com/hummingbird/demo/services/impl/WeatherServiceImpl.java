@@ -45,7 +45,14 @@ public class WeatherServiceImpl  implements WeatherService{
 		WeatherBodyVOResult result = new WeatherBodyVOResult();
 		String url = "";
 		Map<String,String> params = new HashMap<String, String>(); 
-		boolean type = true;
+		//开发者密钥
+		params.put("ak", "GgS4VK9Ci9MgoUx6E6I5MkwB");
+		//输出的数据格式json
+		params.put("output", "’json");
+		//城市名称
+		params.put("location", body.getCity());
+		//type=true以rest风格传递参数，type=false以&拼接参数
+		boolean type = false;
 		HttpProcessUtil httpProCessUtil = new HttpProcessUtil();
 		try {
 			byte[] bytes = httpProCessUtil.doGet(url, params, type);
@@ -57,6 +64,7 @@ public class WeatherServiceImpl  implements WeatherService{
 			result.setWeather(json.getString("weather"));
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new BusinessException();
 		}
 		
 		if(log.isDebugEnabled()){

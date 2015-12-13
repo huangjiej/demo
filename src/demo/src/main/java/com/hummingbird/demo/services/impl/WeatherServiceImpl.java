@@ -1,7 +1,6 @@
 package com.hummingbird.demo.services.impl;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hummingbird.common.face.Pagingnation;
-import com.hummingbird.demo.vo.WeatherBodyVO;
+import com.hummingbird.common.exception.BusinessException;
 import com.hummingbird.demo.mapper.WeatherMapper;
 import com.hummingbird.demo.services.WeatherService;
 import com.hummingbird.demo.util.HttpProcessUtil;
-import com.hummingbird.common.exception.BusinessException;
+import com.hummingbird.demo.vo.WeatherBodyVO;
 import com.hummingbird.demo.vo.WeatherBodyVOResult;
 
 import net.sf.json.JSONObject;

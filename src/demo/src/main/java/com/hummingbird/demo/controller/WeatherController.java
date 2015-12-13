@@ -77,11 +77,6 @@ public class WeatherController extends BaseController {
 				rm.mergeException(ValidateException.ERROR_PARAM_FORMAT_ERROR.cloneAndAppend(null, messagebase+"参数"));
 				return rm;
 			}
-			String city = transorder.getBody().getCity();
-			if(StringUtils.isBlank(city)){
-				rm.setErrcode(10000);
-				rm.setErrmsg("城市名不能为空");
-			}else{
 				//业务数据逻辑校验
 				if(log.isDebugEnabled()){
 					log.debug("检验通过，获取请求");
@@ -91,7 +86,6 @@ public class WeatherController extends BaseController {
 				rm.setErrmsg(messagebase + "成功");
 				rm.put("result",result);
 				//tokenSrv.postponeToken(token);
-			}
 		}catch (BusinessException e) {
 			log.error(String.format(messagebase + "失败"), e);
 			rm.setErrcode(10000);

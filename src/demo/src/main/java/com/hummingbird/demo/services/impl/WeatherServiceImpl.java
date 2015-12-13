@@ -3,12 +3,14 @@ package com.hummingbird.demo.services.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hummingbird.common.exception.BusinessException;
+import com.hummingbird.common.exception.ValidateException;
 import com.hummingbird.demo.mapper.WeatherMapper;
 import com.hummingbird.demo.services.WeatherService;
 import com.hummingbird.demo.util.HttpProcessUtil;
@@ -42,13 +44,18 @@ public class WeatherServiceImpl  implements WeatherService{
 		if(log.isDebugEnabled()){
 				log.debug("查询城市天气开始");
 		}
+		String city = body.getCity();
+		if(StringUtils.isBlank(city)){
+			log.error( "城市名称不能为空");
+			throw ValidateException.ERROR_PARAM_NULL.clone(null, "城市名称不能为空");
+		}
 		WeatherBodyVOResult result = new WeatherBodyVOResult();
 		String url = "";
 		Map<String,String> params = new HashMap<String, String>(); 
 		//开发者密钥
 		params.put("ak", "GgS4VK9Ci9MgoUx6E6I5MkwB");
 		//输出的数据格式json
-		params.put("output", "’json");
+		params.put("output", "json");
 		//城市名称
 		params.put("location", body.getCity());
 		//type=true以rest风格传递参数，type=false以&拼接参数

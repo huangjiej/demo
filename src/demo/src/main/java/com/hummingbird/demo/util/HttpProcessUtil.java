@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HostParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 
@@ -34,7 +35,7 @@ public class HttpProcessUtil
     else
       url = url + "?";
     String param;
-    if (params != null) {
+    if (params != null && !params.isEmpty()) {
       try {
         for (String key : params.keySet()) {
           param = "";
@@ -48,8 +49,9 @@ public class HttpProcessUtil
       } catch (UnsupportedEncodingException e) {
         e.printStackTrace();
       }
-
-      queryString.delete(queryString.length() - 1, queryString.length());
+	  if(StringUtils.isNotBlank(queryString)){
+		  queryString.delete(queryString.length() - 1, queryString.length());
+	  }
     }
     System.out.println(url + queryString.toString());
     GetMethod getMethod = new GetMethod(url + queryString.toString());

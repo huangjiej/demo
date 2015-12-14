@@ -23,7 +23,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/repository/com/hummingbird/common/0.0.1-SNAPSHOT/common-0.0.1-20151201.134534-5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_05">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

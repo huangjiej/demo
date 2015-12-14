@@ -42,7 +42,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<table>
 	<tr><td colspan="6"> </td></tr>
 	<tr>
-		<td><input  value="查询城市天气"  onclick='setbinding("/weather/queryWeather"," {        \"app\":{            \"appId\":\"demo\",            \"timeStamp\":\"TIMESTAMP\",             \"nonce\":\"NONCE\",            \"signature\":\"SIGNATURE\"        },        \"body\":{           \"city\":\"娣卞湷\"        }}")'  type="button" ></td>
+	                                               <!-- setbinding(api,json,cookiejson,submittype) -->
+		<td><input  value="查询城市天气"  onclick='setbinding("/weather/queryWeather"," {        \"app\":{            \"appId\":\"demo\",            \"timeStamp\":\"TIMESTAMP\",             \"nonce\":\"NONCE\",            \"signature\":\"SIGNATURE\"        },        \"body\":{           \"city\":\"深圳\"        }}")'  type="button" ></td>
 	</tr>
 </table>
   </body>

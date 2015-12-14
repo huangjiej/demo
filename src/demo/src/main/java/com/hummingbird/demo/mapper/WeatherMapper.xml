@@ -30,7 +30,7 @@
       #{minTemperature,jdbcType=INTEGER}, #{maxTemperature,jdbcType=INTEGER}, #{weather,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.hummingbird.demo.entity.Weather" >
+  <insert id="insertSelective" parameterType="com.hummingbird.demo.entity.Weather" useGeneratedKeys="true" keyProperty="id">
     insert into t_weather
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

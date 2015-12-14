@@ -56,7 +56,6 @@ public class WeatherController extends BaseController {
 		RequestEvent qe=null ; //业务请求事件,当实现一些关键的业务时,需要生成该请求
 		
 		try {
- 			System.out.println(555);
 			//业务数据必填等校验
 //			Token token = tokenSrv.getToken(transorder.getBody().getToken(), transorder.getApp().getAppId());
 //			if (token == null) {
@@ -69,8 +68,7 @@ public class WeatherController extends BaseController {
 				if(log.isDebugEnabled()){
 					log.debug("检验通过，获取请求");
 				}
-				//WeatherBodyVOResult  result = weatherService.queryWeather(transorder.getApp().getAppId(),transorder.getBody());
-				WeatherBodyVOResult  result = weatherService.queryWeather("test",transorder.getBody());
+				WeatherBodyVOResult  result = weatherService.queryWeather(transorder.getApp().getAppId(),transorder.getBody());
 				rm.setErrcode(0);
 				rm.setErrmsg(messagebase + "成功");
 				rm.put("result",result);

@@ -30,7 +30,7 @@ public class WeatherBodyVOResult
 	     */
 	    protected String weather;
 	    	/**
-	     * 当前时间,年-月-日
+	     *明天的时间,年-月-日
 	     */
 	    protected String date;
 	

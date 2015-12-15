@@ -94,6 +94,4 @@ public class WeatherController extends BaseController {
 		return rm;
 		
 	}
-	
-	
-    }
+ }

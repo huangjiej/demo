@@ -1,5 +1,6 @@
 package com.hummingbird.demo.services.impl;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,6 +22,7 @@ import com.hummingbird.demo.util.HttpProcessUtil;
 import com.hummingbird.demo.vo.WeatherBodyVO;
 import com.hummingbird.demo.vo.WeatherBodyVOResult;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
@@ -53,7 +55,6 @@ public class WeatherServiceImpl  implements WeatherService{
 			log.error( "城市名称不能为空");
 			throw ValidateException.ERROR_PARAM_NULL.clone(null, "城市名称不能为空");
 		}
-		WeatherBodyVOResult result = new WeatherBodyVOResult();
 		String url = "http://api.map.baidu.com/telematics/v3/weather";
 		Map<String,String> params = new HashMap<String, String>(); 
 		//开发者密钥
@@ -65,12 +66,48 @@ public class WeatherServiceImpl  implements WeatherService{
 		//type=true以rest风格传递参数，type=false以&拼接参数
 		boolean type = false;
 		HttpProcessUtil httpProCessUtil = new HttpProcessUtil();
-		
+		WeatherBodyVOResult result = new WeatherBodyVOResult();
 		try {
 			byte[] bytes = httpProCessUtil.doGet(url, params, type);
 			String responseBody = new String(bytes, "UTF-8");
-			JSONObject json = JSONObject.fromObject(responseBody);
-			System.out.println(json);
+			JSONObject jsonObject = JSONObject.fromObject(responseBody);
+			String status = jsonObject.getString("status");
+			//查询天气成功
+			if("success".equals(status)){
+				    //解析json
+				    result = parseJson(jsonObject);
+				    
+				    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");  
+			        Calendar cal = Calendar.getInstance();  
+					cal.setTime(sf.parse(result.getDate()));
+			        Date tomorrowDate = cal.getTime();
+					Weather weather = new Weather();
+					weather.setCity(city);
+					weather.setMinTemperature(result.getMinTemperature());
+					weather.setMaxTemperature(result.getMaxTemperature());
+			        weather.setWeatherDay(tomorrowDate);
+					weather.setWeather(result.getWeather());
+					//保存明天的天气到数据库
+					weatherDao.insertSelective(weather);
+			}
+		}catch (BusinessException e) {
+			throw e;
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new BusinessException(e);
+		}
+		
+		if(log.isDebugEnabled()){
+				log.debug("查询城市天气完成");
+		}
+		return result;
+	}
+		
+	 
+	private WeatherBodyVOResult parseJson(JSONObject jsonObject) throws BusinessException{
+			WeatherBodyVOResult result = new WeatherBodyVOResult();
+		 try {
+			System.out.println(jsonObject);
 			//{"date":"2015-12-14","error":0,
 			//"results":[ 
 			     //{"weather_data":[
@@ -81,49 +118,74 @@ public class WeatherServiceImpl  implements WeatherService{
 			// ],"pm25":"38","index":
 			//[{"des":"建议着薄外套、开衫牛仔衫裤等服装。年老体弱者应适当添加衣物，宜着夹克衫、薄毛衣等。","zs":"较舒适","title":"穿衣","tipt":"穿衣指数"},{"des":"较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。","zs":"较适宜","title":"洗车","tipt":"洗车指数"},{"des":"天气较好，但丝毫不会影响您出行的心情。温度适宜又有微风相伴，适宜旅游。","zs":"适宜","title":"旅游","tipt":"旅游指数"},{"des":"天冷风大，易发生感冒，请注意适当增加衣服，加强自我防护避免感冒。","zs":"易发","title":"感冒","tipt":"感冒指数"},{"des":"天气较好，赶快投身大自然参与户外运动，尽情感受运动的快乐吧。","zs":"适宜","title":"运动","tipt":"运动指数"},{"des":"紫外线强度较弱，建议出门前涂擦SPF在12-15之间、PA+的防晒护肤品。","zs":"弱","title":"紫外线强度","tipt":"紫外线强度指数"}],
 			//"currentCity":"深圳"}],"status":"success"}
-			String temperature = json.getString("temperature");
-			String[] temper = temperature.split("~");
-			int minTemperature = json.getInt("minTemperature");
-			int maxTemperature = json.getInt("maxTemperature");
-			String weatherCondition = json.getString("weather");
+			String currentCity = jsonObject.getString("currentCity");
+			String currentDate = jsonObject.getString("date");
+			//当前时间
+			//String currentDate = jsonObject.getString("date");
+			 JSONArray results = jsonObject.getJSONArray("results");
+			 JSONObject jo = (JSONObject) results.get(0);
+			 JSONArray weatherData = jo.getJSONArray("weather_data");
+		     //取第二天的天气
+		     JSONObject tomorrowWeather = weatherData.getJSONObject(1);
+			 //周四
+			 // String week = tomorrowWeather.getString("date");
+		     //微风
+			 //String wind = tomorrow.getString("wind");
+			 //晴转多云
+			 String weather = tomorrowWeather.getString("weather");
+			//25 ~ 15℃
+			String temperature = tomorrowWeather.getString("temperature");
+			temperature = temperature.substring(0, temperature.indexOf("℃"));
+			String[] tempers = temperature.split("~");
+			int minTemperature=0,maxTemperature=0;
+			if(tempers.length > 0){
+				if(temperature.contains("~") && tempers.length == 2){
+					minTemperature = Integer.parseInt(tempers[0]);
+					maxTemperature = Integer.parseInt(tempers[1]);
+				}else{
+					minTemperature = Integer.parseInt(tempers[0]);
+					 maxTemperature = minTemperature;
+				}
+			}
 			
-			//获取当前日期  
-            Date date = new Date();  
-            SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");  
-            String nowDate = sf.format(date);  
-            //通过日历获取下一天日期  
+			 //通过日历获取下一天日期  
+			 SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");  
             Calendar cal = Calendar.getInstance();  
-            cal.setTime(sf.parse(nowDate));  
+			cal.setTime(sf.parse(currentDate));
             cal.add(Calendar.DAY_OF_YEAR, +1);  
-            Date tomorrowDate = cal.getTime();
             String tomorrow = sf.format(cal.getTime());  
-            
-			result.setCityName(city);
+		
+			result.setCityName(currentCity);
 			result.setMinTemperature(minTemperature);
 			result.setMaxTemperature(maxTemperature);
-			result.setWeather(weatherCondition);
+			result.setWeather(weather);
 			result.setDate(tomorrow);
+			} catch (ParseException e) {
+				e.printStackTrace();
+				throw new BusinessException("解析日期失败");
+			}  catch (Exception e) {
+				e.printStackTrace();
+				throw new BusinessException("解析天气信息失败");
+		    }  
+			return result;
 			
-			//保存明天的天气到数据库
-			Weather weather = new Weather();
-			weather.setCity(city);
-			weather.setMinTemperature(minTemperature);
-			weather.setMaxTemperature(maxTemperature);
-			weather.setWeatherDay(tomorrowDate);
-			weather.setWeather(weatherCondition);
-			
-			weatherDao.insertSelective(weather);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new BusinessException();
 		}
-		
-		if(log.isDebugEnabled()){
-				log.debug("查询城市天气完成");
+	
+	public static void main(String[] args) {
+		String temperature = "19 ~ 8℃";
+		temperature = temperature.substring(0, temperature.indexOf("℃"));
+		String[] tempers = temperature.split("~");
+		int minTemperature=0;
+		int maxTemperature=0;
+		if(temperature.contains("~") && tempers.length == 2){
+			minTemperature = Integer.parseInt(tempers[0]);
+			maxTemperature = Integer.parseInt(tempers[1]);
+		}else{
+			minTemperature = Integer.parseInt(tempers[0]);
+			 maxTemperature = minTemperature;
 		}
-		return result;
+		System.out.println(minTemperature);
+		System.out.println(maxTemperature);
 	}
-		
-		
 		
 }

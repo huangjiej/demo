@@ -39,7 +39,7 @@ public class WeatherServiceImpl  implements WeatherService{
 	@Autowired
 	WeatherMapper weatherDao;
 
-			/**
+	/**
 	 * 查询城市天气
 	 * @param appId 应用id
 	 * @param body 参数
@@ -112,7 +112,6 @@ public class WeatherServiceImpl  implements WeatherService{
 			e.printStackTrace();
 			throw new BusinessException(e);
 		}
-		
 		if(log.isDebugEnabled()){
 				log.debug("查询城市天气完成");
 		}

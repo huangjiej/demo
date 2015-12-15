@@ -56,6 +56,7 @@ public class WeatherServiceImpl  implements WeatherService{
 			log.error( "城市名称不能为空");
 			throw ValidateException.ERROR_PARAM_NULL.clone(null, "城市名称不能为空");
 		}
+		city = city.replaceAll(" ", "");
 		String url = "http://api.map.baidu.com/telematics/v3/weather";
 		Map<String,String> params = new HashMap<String, String>(); 
 		//开发者密钥

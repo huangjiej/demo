@@ -120,18 +120,6 @@ public class WeatherServiceImpl  implements WeatherService{
 	private WeatherBodyVOResult parseJson(JSONObject jsonObject) throws BusinessException{
 			WeatherBodyVOResult result = new WeatherBodyVOResult();
 		 try {
-			System.out.println(jsonObject);
-			//{"date":"2015-12-14","error":0,
-			//"results":[ 
-			     //{"weather_data":[
-			 //{"date":"周一 12月14日 (实时：19℃)","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/duoyun.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/duoyun.png","weather":"多云","temperature":"24 ~ 14℃","wind":"微风"},
-			//{"date":"周二","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/duoyun.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/duoyun.png","weather":"多云","temperature":"19 ~ 12℃","wind":"微风"},
-			//{"date":"周三","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/duoyun.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/qing.png","weather":"多云转晴","temperature":"15 ~ 10℃","wind":"东北风5-6级"},
-			//{"date":"周四","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/qing.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/qing.png","weather":"晴","temperature":"15 ~ 10℃","wind":"东北风4-5级"}
-			// ],"pm25":"38","index":
-			//[{"des":"建议着薄外套、开衫牛仔衫裤等服装。年老体弱者应适当添加衣物，宜着夹克衫、薄毛衣等。","zs":"较舒适","title":"穿衣","tipt":"穿衣指数"},{"des":"较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。","zs":"较适宜","title":"洗车","tipt":"洗车指数"},{"des":"天气较好，但丝毫不会影响您出行的心情。温度适宜又有微风相伴，适宜旅游。","zs":"适宜","title":"旅游","tipt":"旅游指数"},{"des":"天冷风大，易发生感冒，请注意适当增加衣服，加强自我防护避免感冒。","zs":"易发","title":"感冒","tipt":"感冒指数"},{"des":"天气较好，赶快投身大自然参与户外运动，尽情感受运动的快乐吧。","zs":"适宜","title":"运动","tipt":"运动指数"},{"des":"紫外线强度较弱，建议出门前涂擦SPF在12-15之间、PA+的防晒护肤品。","zs":"弱","title":"紫外线强度","tipt":"紫外线强度指数"}],
-			//"currentCity":"深圳"}],"status":"success"}
-			
 			String currentDate = jsonObject.getString("date");
 			//当前时间
 			//String currentDate = jsonObject.getString("date");
@@ -158,11 +146,11 @@ public class WeatherServiceImpl  implements WeatherService{
 				System.out.println(temperature);
 				String[] tempers = temperature.split("~");
 				if(temperature.contains("~") && tempers.length == 2){
-					minTemperature = Integer.parseInt(tempers[0]);
-					maxTemperature = Integer.parseInt(tempers[1]);
+					 maxTemperature= Integer.parseInt(tempers[0]);
+					 minTemperature = Integer.parseInt(tempers[1]);
 				}else{
-					minTemperature = Integer.parseInt(tempers[0]);
-					 maxTemperature = minTemperature;
+					maxTemperature = Integer.parseInt(tempers[0]);
+					minTemperature = maxTemperature;
 				}
 			}	
 			 //通过日历获取下一天日期  
@@ -187,24 +175,4 @@ public class WeatherServiceImpl  implements WeatherService{
 			return result;
 			
 		}
-
-	
-	 public static void main(String[] args){
-		String temperature = "19 ~ 8℃";
-		System.out.println(temperature);
-		temperature = temperature.replaceAll(" ", "").replaceAll("℃", "");
-		System.out.println(temperature);
-		String[] tempers = temperature.split("~");
-		int minTemperature,maxTemperature=0;
-		if(temperature.contains("~") && tempers.length == 2){
-			minTemperature = Integer.parseInt(tempers[0]);
-			maxTemperature = Integer.parseInt(tempers[1]);
-		}else{
-			minTemperature = Integer.parseInt(tempers[0]);
-			 maxTemperature = minTemperature;
-		}
-		System.out.println(minTemperature);
-		System.out.println(maxTemperature);
-	}
-		
 }

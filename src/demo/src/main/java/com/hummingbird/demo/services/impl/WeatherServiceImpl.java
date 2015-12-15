@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,11 +93,8 @@ public class WeatherServiceImpl  implements WeatherService{
 					Weather oldWeather = new Weather();
 					oldWeather.setCity(result.getCityName());
 					oldWeather.setWeatherDay(tomorrowDate);
-					
-					//oldWeather = weatherDao.selectByCityAndDate(oldWeather);
-					
-					oldWeather = weatherDao.selectWeather(result.getCityName(),tomorrowDate);
-					
+					//根据城市和日期查询天气
+					oldWeather = weatherDao.selectByCityAndDate(oldWeather);
 					if(oldWeather!= null && oldWeather.getId()!=null){
 						//更新明天的天气
 						weather.setId(oldWeather.getId());
@@ -106,6 +104,8 @@ public class WeatherServiceImpl  implements WeatherService{
 						weatherDao.insertSelective(weather);
 					}
 			}
+		}catch (DataAccessException e) {
+			throw new BusinessException("保存天气信息失败");
 		}catch (BusinessException e) {
 			throw e;
 		}catch (Exception e) {

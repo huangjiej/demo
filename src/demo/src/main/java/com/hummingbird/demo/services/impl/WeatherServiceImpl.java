@@ -73,39 +73,46 @@ public class WeatherServiceImpl  implements WeatherService{
 			String responseBody = new String(bytes, "UTF-8");
 			JSONObject jsonObject = JSONObject.fromObject(responseBody);
 			String status = jsonObject.getString("status");
-			//查询天气成功
-			if("success".equals(status)){
-				    //解析json
-				    result = parseJson(jsonObject);
-				    
-				    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");  
-			        Calendar cal = Calendar.getInstance();  
-					cal.setTime(sf.parse(result.getDate()));
-			        Date tomorrowDate = cal.getTime();
-			        
-					Weather weather = new Weather();
-					weather.setCity(result.getCityName());
-					weather.setMinTemperature(result.getMinTemperature());
-					weather.setMaxTemperature(result.getMaxTemperature());
-			        weather.setWeatherDay(tomorrowDate);
-					weather.setWeather(result.getWeather());
-					
-					Weather oldWeather = new Weather();
-					oldWeather.setCity(result.getCityName());
-					oldWeather.setWeatherDay(tomorrowDate);
-					//根据城市和日期查询天气
-					oldWeather = weatherDao.selectByCityAndDate(oldWeather);
-					if(oldWeather!= null && oldWeather.getId()!=null){
-						//更新明天的天气
-						weather.setId(oldWeather.getId());
-						weatherDao.updateByPrimaryKey(weather);
-					}else{
-						//保存明天的天气到数据库
-						weatherDao.insertSelective(weather);
-					}
+			int error = jsonObject.getInt("error");
+			if(error == -2){
+				throw new BusinessException("查询天气的城市名称不能为空。");
+			}else if(error == -3){
+				throw new BusinessException("未查询到[【"+city+"】的天气信息，请输入正确的城市名称。");
+			}else{
+				//查询天气成功
+				if("success".equals(status)){
+					    //解析json
+					    result = parseJson(jsonObject);
+					    
+					    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");  
+				        Calendar cal = Calendar.getInstance();  
+						cal.setTime(sf.parse(result.getDate()));
+				        Date tomorrowDate = cal.getTime();
+				        
+						Weather weather = new Weather();
+						weather.setCity(result.getCityName());
+						weather.setMinTemperature(result.getMinTemperature());
+						weather.setMaxTemperature(result.getMaxTemperature());
+				        weather.setWeatherDay(tomorrowDate);
+						weather.setWeather(result.getWeather());
+						
+						Weather oldWeather = new Weather();
+						oldWeather.setCity(result.getCityName());
+						oldWeather.setWeatherDay(tomorrowDate);
+						//根据城市和日期查询天气
+						oldWeather = weatherDao.selectByCityAndDate(oldWeather);
+						if(oldWeather!= null && oldWeather.getId()!=null){
+							//更新明天的天气
+							weather.setId(oldWeather.getId());
+							weatherDao.updateByPrimaryKey(weather);
+						}else{
+							//保存明天的天气到数据库
+							weatherDao.insertSelective(weather);
+						}
+				}
 			}
 		}catch (DataAccessException e) {
-			throw new BusinessException("保存天气信息失败");
+			throw new BusinessException("保存天气信息失败。");
 		}catch (BusinessException e) {
 			throw e;
 		}catch (Exception e) {

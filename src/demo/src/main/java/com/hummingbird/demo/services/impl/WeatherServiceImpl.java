@@ -82,7 +82,7 @@ public class WeatherServiceImpl  implements WeatherService{
 					cal.setTime(sf.parse(result.getDate()));
 			        Date tomorrowDate = cal.getTime();
 					Weather weather = new Weather();
-					weather.setCity(city);
+					weather.setCity(result.getCityName());
 					weather.setMinTemperature(result.getMinTemperature());
 					weather.setMaxTemperature(result.getMaxTemperature());
 			        weather.setWeatherDay(tomorrowDate);
@@ -137,8 +137,7 @@ public class WeatherServiceImpl  implements WeatherService{
 			 String weather = tomorrowWeather.getString("weather");
 			//25 ~ 15℃
 			String temperature = tomorrowWeather.getString("temperature");
-			int minTemperature=0;
-			int maxTemperature=0;
+			int minTemperature=0,maxTemperature=0;
 			if(!temperature.contains("℃")){
 				throw new BusinessException("获取温度信息失败");
 			}else{
@@ -183,8 +182,7 @@ public class WeatherServiceImpl  implements WeatherService{
 		temperature = temperature.replaceAll(" ", "").replaceAll("℃", "");
 		System.out.println(temperature);
 		String[] tempers = temperature.split("~");
-		int minTemperature=0;
-		int maxTemperature=0;
+		int minTemperature,maxTemperature=0;
 		if(temperature.contains("~") && tempers.length == 2){
 			minTemperature = Integer.parseInt(tempers[0]);
 			maxTemperature = Integer.parseInt(tempers[1]);

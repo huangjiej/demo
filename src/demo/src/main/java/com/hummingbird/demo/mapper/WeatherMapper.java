@@ -1,5 +1,9 @@
 package com.hummingbird.demo.mapper;
 
+import java.util.Date;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.hummingbird.demo.entity.Weather;
 
 public interface WeatherMapper {
@@ -23,6 +27,12 @@ public interface WeatherMapper {
      */
     Weather selectByPrimaryKey(Integer id);
 
+    /**
+     * 根据城市和日期查询记录
+     */
+    Weather selectByCityAndDate(Weather weather);
+    
+    
     /**
      * 根据主键更新属性不为空的记录
      */

@@ -81,14 +81,26 @@ public class WeatherServiceImpl  implements WeatherService{
 			        Calendar cal = Calendar.getInstance();  
 					cal.setTime(sf.parse(result.getDate()));
 			        Date tomorrowDate = cal.getTime();
+			        
 					Weather weather = new Weather();
 					weather.setCity(result.getCityName());
 					weather.setMinTemperature(result.getMinTemperature());
 					weather.setMaxTemperature(result.getMaxTemperature());
 			        weather.setWeatherDay(tomorrowDate);
 					weather.setWeather(result.getWeather());
-					//保存明天的天气到数据库
-					weatherDao.insertSelective(weather);
+					
+					Weather oldWeather = new Weather();
+					oldWeather.setCity(result.getCityName());
+					oldWeather.setWeatherDay(tomorrowDate);
+					oldWeather = weatherDao.selectByCityAndDate(oldWeather);
+					if(oldWeather!= null && oldWeather.getId()!=null){
+						//更新明天的天气
+						weather.setId(oldWeather.getId());
+						weatherDao.updateByPrimaryKey(weather);
+					}else{
+						//保存明天的天气到数据库
+						weatherDao.insertSelective(weather);
+					}
 			}
 		}catch (BusinessException e) {
 			throw e;

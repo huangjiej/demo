@@ -135,10 +135,14 @@ public class WeatherServiceImpl  implements WeatherService{
 			 String weather = tomorrowWeather.getString("weather");
 			//25 ~ 15℃
 			String temperature = tomorrowWeather.getString("temperature");
-			temperature = temperature.substring(0, temperature.indexOf("℃"));
-			String[] tempers = temperature.split("~");
-			int minTemperature=0,maxTemperature=0;
-			if(tempers.length > 0){
+			int minTemperature=0;
+			int maxTemperature=0;
+			if(!temperature.contains("℃")){
+				throw new BusinessException("获取温度信息失败");
+			}else{
+				temperature = temperature.replaceAll(" ", "").replaceAll("℃", "");
+				System.out.println(temperature);
+				String[] tempers = temperature.split("~");
 				if(temperature.contains("~") && tempers.length == 2){
 					minTemperature = Integer.parseInt(tempers[0]);
 					maxTemperature = Integer.parseInt(tempers[1]);
@@ -146,8 +150,7 @@ public class WeatherServiceImpl  implements WeatherService{
 					minTemperature = Integer.parseInt(tempers[0]);
 					 maxTemperature = minTemperature;
 				}
-			}
-			
+			}	
 			 //通过日历获取下一天日期  
 			 SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");  
             Calendar cal = Calendar.getInstance();  
@@ -170,10 +173,13 @@ public class WeatherServiceImpl  implements WeatherService{
 			return result;
 			
 		}
+
 	
-	public static void main(String[] args) {
+	 public static void main(String[] args){
 		String temperature = "19 ~ 8℃";
-		temperature = temperature.substring(0, temperature.indexOf("℃"));
+		System.out.println(temperature);
+		temperature = temperature.replaceAll(" ", "").replaceAll("℃", "");
+		System.out.println(temperature);
 		String[] tempers = temperature.split("~");
 		int minTemperature=0;
 		int maxTemperature=0;

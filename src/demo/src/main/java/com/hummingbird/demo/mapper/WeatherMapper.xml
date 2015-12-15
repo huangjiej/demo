@@ -25,6 +25,13 @@
     where city = #{weather.city,jdbcType=VARCHAR} and weatherDay = #{weather.weatherDay,jdbcType=DATE}
     limit 1
   </select>
+     <select id="selectWeather" resultMap="BaseResultMap" parameterType="com.hummingbird.demo.entity.Weather" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_weather
+    where city = #{city,jdbcType=VARCHAR} and weatherDay = #{weatherDay,jdbcType=DATE}
+    limit 1
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_weather
     where id = #{id,jdbcType=INTEGER}

@@ -32,6 +32,11 @@ public interface WeatherMapper {
      */
     Weather selectByCityAndDate(Weather weather);
     
+    /**
+     * 查询记录
+     */
+    Weather selectWeather(@Param("city")String city,@Param("weatherDay")Date weatherDay);
+    
     
     /**
      * 根据主键更新属性不为空的记录

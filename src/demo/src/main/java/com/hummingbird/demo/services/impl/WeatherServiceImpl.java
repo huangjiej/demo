@@ -92,7 +92,8 @@ public class WeatherServiceImpl  implements WeatherService{
 					Weather oldWeather = new Weather();
 					oldWeather.setCity(result.getCityName());
 					oldWeather.setWeatherDay(tomorrowDate);
-					oldWeather = weatherDao.selectByCityAndDate(oldWeather);
+					//oldWeather = weatherDao.selectByCityAndDate(oldWeather);
+					oldWeather = weatherDao.selectWeather(result.getCityName(),tomorrowDate);
 					if(oldWeather!= null && oldWeather.getId()!=null){
 						//更新明天的天气
 						weather.setId(oldWeather.getId());

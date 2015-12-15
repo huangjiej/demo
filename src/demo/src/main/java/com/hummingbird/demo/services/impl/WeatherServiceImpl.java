@@ -59,7 +59,7 @@ public class WeatherServiceImpl  implements WeatherService{
 		city = city.replaceAll(" ", "");
 		String url = "http://api.map.baidu.com/telematics/v3/weather";
 		Map<String,String> params = new HashMap<String, String>(); 
-		//开发者密钥
+		//开发者密钥s
 		params.put("ak", "GgS4VK9Ci9MgoUx6E6I5MkwB");
 		//输出的数据格式json
 		params.put("output", "json");

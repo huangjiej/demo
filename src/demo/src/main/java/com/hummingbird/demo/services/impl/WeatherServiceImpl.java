@@ -118,12 +118,14 @@ public class WeatherServiceImpl  implements WeatherService{
 			// ],"pm25":"38","index":
 			//[{"des":"建议着薄外套、开衫牛仔衫裤等服装。年老体弱者应适当添加衣物，宜着夹克衫、薄毛衣等。","zs":"较舒适","title":"穿衣","tipt":"穿衣指数"},{"des":"较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。","zs":"较适宜","title":"洗车","tipt":"洗车指数"},{"des":"天气较好，但丝毫不会影响您出行的心情。温度适宜又有微风相伴，适宜旅游。","zs":"适宜","title":"旅游","tipt":"旅游指数"},{"des":"天冷风大，易发生感冒，请注意适当增加衣服，加强自我防护避免感冒。","zs":"易发","title":"感冒","tipt":"感冒指数"},{"des":"天气较好，赶快投身大自然参与户外运动，尽情感受运动的快乐吧。","zs":"适宜","title":"运动","tipt":"运动指数"},{"des":"紫外线强度较弱，建议出门前涂擦SPF在12-15之间、PA+的防晒护肤品。","zs":"弱","title":"紫外线强度","tipt":"紫外线强度指数"}],
 			//"currentCity":"深圳"}],"status":"success"}
-			String currentCity = jsonObject.getString("currentCity");
+			
 			String currentDate = jsonObject.getString("date");
 			//当前时间
 			//String currentDate = jsonObject.getString("date");
 			 JSONArray results = jsonObject.getJSONArray("results");
 			 JSONObject jo = (JSONObject) results.get(0);
+			 //当前城市
+			 String currentCity = jo.getString("currentCity");
 			 JSONArray weatherData = jo.getJSONArray("weather_data");
 		     //取第二天的天气
 		     JSONObject tomorrowWeather = weatherData.getJSONObject(1);

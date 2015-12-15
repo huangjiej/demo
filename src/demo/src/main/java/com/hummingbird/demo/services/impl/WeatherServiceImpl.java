@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hummingbird.common.exception.BusinessException;
 import com.hummingbird.common.exception.ValidateException;
+import com.hummingbird.common.util.DateUtil;
+import com.hummingbird.common.util.ValidateUtil;
 import com.hummingbird.demo.entity.Weather;
 import com.hummingbird.demo.mapper.WeatherMapper;
 import com.hummingbird.demo.services.WeatherService;
@@ -52,6 +54,7 @@ public class WeatherServiceImpl  implements WeatherService{
 				log.debug("查询城市天气开始");
 		}
 		String city = body.getCity();
+		//ValidateUtil.assertEmpty(city, "城市名称");
 		if(StringUtils.isBlank(city)){
 			log.error( "城市名称不能为空");
 			throw ValidateException.ERROR_PARAM_NULL.clone(null, "城市名称不能为空");
@@ -185,4 +188,5 @@ public class WeatherServiceImpl  implements WeatherService{
 			return result;
 			
 		}
+
 }

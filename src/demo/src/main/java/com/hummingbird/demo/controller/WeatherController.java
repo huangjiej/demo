@@ -10,16 +10,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hummingbird.common.controller.BaseController;
-import com.hummingbird.common.event.EventListenerContainer;
-import com.hummingbird.common.event.RequestEvent;
 import com.hummingbird.common.exception.BusinessException;
 import com.hummingbird.common.ext.AccessRequered;
 import com.hummingbird.common.vo.ResultModel;
 import com.hummingbird.commonbiz.vo.BaseTransVO;
-import com.hummingbird.commonbiz.vo.BaseTransVO;
-import com.hummingbird.commonbiz.vo.BaseTransVO;
 import com.hummingbird.demo.services.WeatherService;
-import com.hummingbird.demo.vo.WeatherBodyVO;
 import com.hummingbird.demo.vo.WeatherBodyVO;
 import com.hummingbird.demo.vo.WeatherBodyVOResult;
 
@@ -35,11 +30,6 @@ import com.hummingbird.demo.vo.WeatherBodyVOResult;
 public class WeatherController extends BaseController {
 	@Autowired(required = true)
 	protected WeatherService weatherService;
-
-	
-	
-//	@Autowired
-//	TokenService tokenSrv;
 		
 	/**
 	 * 查询城市天气
@@ -52,18 +42,7 @@ public class WeatherController extends BaseController {
 		ResultModel rm = super.getResultModel();
 		BaseTransVO<WeatherBodyVO> transorder = (BaseTransVO<WeatherBodyVO>) super.getParameterObject();
 		String messagebase = "查询城市天气"; 
-	
-		RequestEvent qe=null ; //业务请求事件,当实现一些关键的业务时,需要生成该请求
-		
 		try {
-			//业务数据必填等校验
-//			Token token = tokenSrv.getToken(transorder.getBody().getToken(), transorder.getApp().getAppId());
-//			if (token == null) {
-//				log.error(String.format("token[%s]验证失败,或已过期,请重新登录", transorder.getBody().getToken()));
-//				throw new TokenException("token验证失败,或已过期,请重新登录");
-//			}
-//			validateWithBusiness(transorder.getBody().getToken(), transorder.getApp().getAppId(),token);
-			
 				//业务数据逻辑校验
 				if(log.isDebugEnabled()){
 					log.debug("检验通过，获取请求");
@@ -72,25 +51,17 @@ public class WeatherController extends BaseController {
 				rm.setErrcode(0);
 				rm.setErrmsg(messagebase + "成功");
 				rm.put("result",result);
-				//tokenSrv.postponeToken(token);
 		}catch (BusinessException e) {
 			log.error(String.format(messagebase + "失败"), e);
 			rm.setErrcode(10000);
 			rm.setErrmsg(messagebase + "失败");
 			rm.mergeException(e);
-			if(qe!=null)
-				qe.setSuccessed(false);
 		}catch (Exception e) {
 			log.error(String.format(messagebase + "失败"), e);
 			rm.setErrcode(10000);
 			rm.setErrmsg(messagebase + "失败");
 			rm.mergeException(e);
-			if(qe!=null)
-				qe.setSuccessed(false);
-		} finally {
-			if(qe!=null)
-				EventListenerContainer.getInstance().fireEvent(qe);
-		}
+		} 
 		return rm;
 		
 	}

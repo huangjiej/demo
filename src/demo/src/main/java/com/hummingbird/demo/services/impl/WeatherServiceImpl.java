@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hummingbird.common.exception.BusinessException;
 import com.hummingbird.common.exception.ValidateException;
-import com.hummingbird.common.util.DateUtil;
 import com.hummingbird.common.util.ValidateUtil;
+import com.hummingbird.common.util.http.HttpRequester;
 import com.hummingbird.demo.entity.Weather;
 import com.hummingbird.demo.mapper.WeatherMapper;
 import com.hummingbird.demo.services.WeatherService;
@@ -54,11 +54,11 @@ public class WeatherServiceImpl  implements WeatherService{
 				log.debug("查询城市天气开始");
 		}
 		String city = body.getCity();
-		//ValidateUtil.assertEmpty(city, "城市名称");
-		if(StringUtils.isBlank(city)){
+		ValidateUtil.assertEmpty(city, "城市名称不能为空");
+		/*if(StringUtils.isBlank(city)){
 			log.error( "城市名称不能为空");
 			throw ValidateException.ERROR_PARAM_NULL.clone(null, "城市名称不能为空");
-		}
+		}*/
 		city = city.replaceAll(" ", "");
 		String url = "http://api.map.baidu.com/telematics/v3/weather";
 		Map<String,String> params = new HashMap<String, String>(); 
@@ -73,6 +73,8 @@ public class WeatherServiceImpl  implements WeatherService{
 		HttpProcessUtil httpProCessUtil = new HttpProcessUtil();
 		WeatherBodyVOResult result = new WeatherBodyVOResult();
 		try {
+			//HttpRequester httpRequester = new HttpRequester();
+			//String responseBody = httpRequester.sendGet(url, params);
 			byte[] bytes = httpProCessUtil.doGet(url, params, type);
 			String responseBody = new String(bytes, "UTF-8");
 			JSONObject jsonObject = JSONObject.fromObject(responseBody);

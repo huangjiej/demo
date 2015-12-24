@@ -54,7 +54,7 @@ public class WeatherServiceImpl  implements WeatherService{
 				log.debug("查询城市天气开始");
 		}
 		String city = body.getCity();
-		ValidateUtil.assertEmpty(city, "城市名称不能为空");
+		ValidateUtil.assertNull(city, "城市名称");
 		/*if(StringUtils.isBlank(city)){
 			log.error( "城市名称不能为空");
 			throw ValidateException.ERROR_PARAM_NULL.clone(null, "城市名称不能为空");

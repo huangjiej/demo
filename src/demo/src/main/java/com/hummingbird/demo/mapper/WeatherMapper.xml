@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hummingbird.demo.mapper.WeatherMapper" >
+  <resultMap id="BaseResultMap" type="com.hummingbird.demo.entity.Weather" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="weather_day" property="weatherDay" jdbcType="DATE" />
+    <result column="min_temperature" property="minTemperature" jdbcType="INTEGER" />
+    <result column="max_temperature" property="maxTemperature" jdbcType="INTEGER" />
+    <result column="weather" property="weather" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, city, weather_day, min_temperature, max_temperature, weather
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_weather
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="selectByCityAndDate" resultMap="BaseResultMap" parameterType="com.hummingbird.demo.entity.Weather" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_weather
+    where city = #{city,jdbcType=VARCHAR} and weather_day = #{weatherDay,jdbcType=DATE}
+    limit 1
+  </select>
+     <select id="selectWeather" resultMap="BaseResultMap" parameterType="com.hummingbird.demo.entity.Weather" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_weather
+    where city = #{city,jdbcType=VARCHAR} and weather_day = #{weatherDay,jdbcType=DATE}
+    limit 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_weather
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hummingbird.demo.entity.Weather" >
+    insert into t_weather (id, city, weather_day, 
+      min_temperature, max_temperature, weather
+      )
+    values (#{id,jdbcType=INTEGER}, #{city,jdbcType=VARCHAR}, #{weatherDay,jdbcType=DATE}, 
+      #{minTemperature,jdbcType=INTEGER}, #{maxTemperature,jdbcType=INTEGER}, #{weather,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hummingbird.demo.entity.Weather" useGeneratedKeys="true" keyProperty="id">
+    insert into t_weather
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="weatherDay != null" >
+        weather_day,
+      </if>
+      <if test="minTemperature != null" >
+        min_temperature,
+      </if>
+      <if test="maxTemperature != null" >
+        max_temperature,
+      </if>
+      <if test="weather != null" >
+        weather,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="weatherDay != null" >
+        #{weatherDay,jdbcType=DATE},
+      </if>
+      <if test="minTemperature != null" >
+        #{minTemperature,jdbcType=INTEGER},
+      </if>
+      <if test="maxTemperature != null" >
+        #{maxTemperature,jdbcType=INTEGER},
+      </if>
+      <if test="weather != null" >
+        #{weather,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hummingbird.demo.entity.Weather" >
+    update t_weather
+    <set >
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="weatherDay != null" >
+        weather_day = #{weatherDay,jdbcType=DATE},
+      </if>
+      <if test="minTemperature != null" >
+        min_temperature = #{minTemperature,jdbcType=INTEGER},
+      </if>
+      <if test="maxTemperature != null" >
+        max_temperature = #{maxTemperature,jdbcType=INTEGER},
+      </if>
+      <if test="weather != null" >
+        weather = #{weather,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hummingbird.demo.entity.Weather" >
+    update t_weather
+    set city = #{city,jdbcType=VARCHAR},
+      weather_day = #{weatherDay,jdbcType=DATE},
+      min_temperature = #{minTemperature,jdbcType=INTEGER},
+      max_temperature = #{maxTemperature,jdbcType=INTEGER},
+      weather = #{weather,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
